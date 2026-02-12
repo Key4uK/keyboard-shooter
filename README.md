@@ -10,7 +10,7 @@ Built with:
 
 ---
 
-## 🔥 Features
+## Features
 
 - Any key -> Shot sound
 - Space -> Reload sound
