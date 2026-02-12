@@ -63,6 +63,9 @@ chmod +x shooter
 
 ## Running the Program
 
+### **IMPORTANT:**
+You must run the `shooter` script **from inside the project directory**.
+
 ### Start:
 
 ```bash
