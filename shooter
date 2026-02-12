@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Get the directory where this script is located
+PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+VENV="$PROJECT_DIR/venv"
+SCRIPT="$PROJECT_DIR/keyboardShooter.py"
+PID_FILE="$PROJECT_DIR/shooter.pid"
+
+start() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Shooter already running."
+        exit 1
+    fi
+
+    echo "Starting shooter..."
+    cd "$PROJECT_DIR" || { echo "Failed to cd to project folder"; exit 1; }
+    nohup "$VENV/bin/python" "$SCRIPT" > /dev/null 2>&1 &
+    echo $! > "$PID_FILE"
+    echo "Shooter started."
+}
+
+stop() {
+    if [ ! -f "$PID_FILE" ]; then
+        echo "Shooter is not running."
+        exit 1
+    fi
+
+    PID=$(cat "$PID_FILE")
+    if ps -p "$PID" > /dev/null 2>&1; then
+        echo "Stopping shooter..."
+        kill "$PID"
+        rm "$PID_FILE"
+        echo "Shooter stopped."
+    else
+        echo "Shooter process not found. Cleaning up PID file."
+        rm "$PID_FILE"
+    fi
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    *) echo "Usage: shooter {start|stop}" ;;
+esac
